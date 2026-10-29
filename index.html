@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sober - Created by Kwaku Ofori Appiah</title>
+<style>
+:root{--green:#1b4332;--green2:#2d6a4f;--light:#f7fcf8;--card:#fff;--orange:#fb8500;--red:#d90429}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,Segoe UI,sans-serif;background:var(--light);color:#222}
+header{background:var(--green);color:white;padding:18px;text-align:center;position:sticky;top:0;z-index:10}
+.credit{font-size:11px;opacity:.7}
+nav{display:flex;gap:6px;overflow:auto;padding:10px;background:white;border-bottom:1px solid #eee;position:sticky;top:76px;z-index:9}
+nav button{white-space:nowrap;padding:10px 14px;border-radius:30px;border:1px solid #ddd;background:white;font-weight:600;cursor:pointer}
+nav button.active{background:var(--green);color:white}
+.container{max-width:850px;margin:auto;padding:12px;display:grid;gap:12px}
+.card{background:var(--card);border-radius:18px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.soberTime{font-size:42px;font-weight:900;color:var(--green)}
+.btn{padding:12px 16px;border-radius:30px;border:none;font-weight:700;cursor:pointer;width:100%}
+.btn-green{background:var(--green2);color:white}.btn-light{background:#e9ecef}.btn-orange{background:var(--orange);color:white}
+.hidden{display:none !important}
+#onboard{position:fixed;inset:0;background:var(--green);color:white;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.onCard{background:white;color:#222;border-radius:18px;padding:20px;max-width:360px;width:100%;text-align:center}
+.crisisBar{background:#fff3cd;border:1px solid #ffe69c;padding:10px;border-radius:12px;font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<div id="onboard">
+<div class="onCard" id="onStep1">
+<h2>Akwaaba to Sober 🌱</h2>
+<p style="font-size:14px;color:#555">Safe space. No shame. One day at a time.</p>
+<button class="btn btn-green" onclick="nextOnboard(2)">Continue</button>
+<div class="credit" style="color:#666;margin-top:8px">Created by Kwaku Ofori Appiah</div>
+</div>
+<div class="onCard hidden" id="onStep2">
+<h3>What are you leaving behind?</h3>
+<select id="onAddType" style="width:100%;padding:12px;border-radius:12px"><option>Alcohol</option><option>Weed / Marijuana</option><option>Porn / Masturbation</option><option>Smoking / Vape</option><option>Other</option></select>
+<input type="datetime-local" id="onStartDate" style="width:100%;padding:12px;border-radius:12px;margin-top:10px">
+<button class="btn btn-green" onclick="nextOnboard(3)" style="margin-top:10px">Next</button>
+</div>
+<div class="onCard hidden" id="onStep3">
+<h3>You are in 🤝</h3>
+<p style="font-size:13px">If you slip, we don't shame. We learn.</p>
+<p style="font-size:11px;color:#888">Ghana: 112 | Mental Health: 0800 000 000</p>
+<button class="btn btn-green" onclick="finishOnboard()">Enter Sober</button>
+</div>
+</div>
+
+<header>
+<h1 id="logoTap">Sober 🌱</h1>
+<div class="credit">Created by <b>Kwaku Ofori Appiah</b></div>
+<div class="crisisBar" style="margin-top:8px">🆘 Ghana Emergency: 112 | Mental Health: 0800 000 000 | WhatsApp: +233 24 000 0000</div>
+</header>
+
+<nav>
+<button class="active" id="btn-home" onclick="showTab('home')">My Sober</button>
+<button id="btn-checkin" onclick="showTab('checkin')">Check-in</button>
+<button id="btn-money" onclick="showTab('money')">Money Saved</button>
+<button id="btn-reasons" onclick="showTab('reasons')">My Reasons</button>
+<button id="btn-forum" onclick="showTab('forum')">Forum</button>
+</nav>
+
+<div class="container">
+<div id="tab-home" class="card">
+<h3>My Sober Journey</h3>
+<div style="text-align:center"><div class="soberTime" id="soberTime">0d 0h 0m</div><div style="font-size:12px;color:#666" id="soberSinceText">Set start date</div></div>
+<div id="milestones" style="margin-top:10px"></div>
+<div class="card" style="margin-top:12px;background:#f8f9fa"><h4 style="margin:0">💚 My Reasons</h4><div id="homeReasons" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"></div></div>
+<div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-orange" onclick="openUrge()" style="flex:1">🆘 I'm Struggling</button><button class="btn btn-light" onclick="openSlipModal()" style="flex:1">I slipped - Start with care</button></div>
+<div class="card" style="background:linear-gradient(135deg,#1b4332,#2d6a4f);color:white;text-align:center;margin-top:12px"><div id="quoteText" style="font-style:italic">"One day at a time."</div><button class="btn btn-light" onclick="newQuote()" style="margin-top:10px;background:white;color:#1b4332">New Motivation</button></div>
+</div>
+
+<div id="tab-checkin" class="card hidden"><h3>Daily Check-in</h3><select id="mood" style="width:100%;padding:12px;border-radius:12px"><option>😊 Good</option><option>😐 Okay</option><option>😔 Low</option><option>😡 Angry</option><option>😰 Anxious</option><option>😴 Tired</option></select><label>Craving 0-10</label><input type="range" id="craving" min="0" max="10" value="2" oninput="cval.innerText=this.value"> <span id="cval">2</span>/10<textarea id="note" placeholder="Short note..." style="width:100%;padding:12px;border-radius:12px;margin-top:8px"></textarea><button class="btn btn-green" onclick="saveCheckin()">Save</button><div id="checkinList" style="margin-top:10px;font-size:13px"></div></div>
+
+<div id="tab-money" class="card hidden"><h3>Money Saved 💰</h3><input type="number" id="weeklySpend" placeholder="GHS per week" style="width:100%;padding:12px;border-radius:12px"><button class="btn btn-green" onclick="saveMoney()" style="margin-top:8px">Save</button><div style="text-align:center;margin-top:14px"><div style="font-size:36px;font-weight:900;color:#1b4332" id="moneySaved">GHS 0</div><div id="moneyVisual" style="font-size:13px"></div></div></div>
+
+<div id="tab-reasons" class="card hidden"><h3>My Reasons</h3><textarea id="reasonsText" rows="6" style="width:100%;padding:12px;border-radius:12px" placeholder="1. For family&#10;2. For health..."></textarea><button class="btn btn-green" onclick="saveReasons()" style="margin-top:8px">Save Reasons</button></div>
+
+<div id="tab-forum" class="card hidden"><h3>Forum - Anonymous</h3><div style="display:flex;gap:6px"><select id="forumCat" style="flex:1;padding:8px;border-radius:10px"><option>Day 1 Support</option><option>Wins</option><option>Struggles</option><option>Relapse Recovery</option><option>Family</option></select><select id="forumFilter" onchange="renderForum()" style="flex:1;padding:8px;border-radius:10px"><option value="All">All</option><option>Day 1 Support</option><option>Wins</option><option>Struggles</option><option>Relapse Recovery</option><option>Family</option></select></div><div id="forumPosts" style="max-height:500px;overflow:auto;margin-top:10px"></div><h4>New Post</h4><input id="fName" placeholder="Anonymous name" style="width:100%;padding:12px;border-radius:12px"><textarea id="fMsg" placeholder="Share..." style="width:100%;padding:12px;border-radius:12px;margin-top:6px"></textarea><button class="btn btn-green" onclick="addPost()" style="margin-top:6px">Post</button></div>
+
+<div id="tab-admin" class="card hidden"><h3>Admin - Kwaku Only</h3><input type="password" id="adminCode" placeholder="Admin code" style="width:100%;padding:12px;border-radius:12px"><button class="btn btn-green" onclick="unlockAdmin()" style="margin-top:6px">Unlock</button><div id="adminContent" class="hidden"><div>Posts: <span id="statPosts">0</span> | Reports: <span id="statReports">0</span></div><h4>Flagged</h4><div id="flaggedList" style="background:#111;color:#0f0;padding:10px;border-radius:10px;max-height:200px;overflow:auto"></div><h4>All Posts - Delete/Ban/Approve</h4><div id="adminForum"></div></div></div>
+</div>
+
+<div id="urgeModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px"><div class="card" style="max-width:380px;width:100%;text-align:center"><h3>🫁 Breathe</h3><div id="breathCircle" style="width:100px;height:100px;border-radius:50%;background:#2d6a4f;margin:20px auto;transition:transform 4s"></div><p id="breathText">Inhale 4s</p><div id="urgeReasons" style="background:#f8f9fa;padding:10px;border-radius:12px;text-align:left"></div><button class="btn btn-green" onclick="closeUrge()" style="margin-top:10px">I'm Okay</button></div></div>
+<div id="slipModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px"><div class="card" style="max-width:380px;width:100%"><h3>No Shame 🌱</h3><textarea id="slipNote" placeholder="What triggered? What to try next?" style="width:100%;padding:12px;border-radius:12px"></textarea><button class="btn btn-green" onclick="confirmSlip()" style="margin-top:8px">Start Again With Care</button><button class="btn btn-light" onclick="closeSlip()" style="margin-top:6px">Not now</button></div></div>
+<div id="selfHarmPopup" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:60;display:flex;align-items:center;justify-content:center;padding:16px"><div class="card" style="max-width:380px"><h3>You are not alone ❤️</h3><p>We noticed self-harm words. Please talk to someone now: Ghana 112 / 0800 000 000</p><button class="btn btn-green" onclick="document.getElementById('selfHarmPopup').style.display='none';document.getElementById('selfHarmPopup').classList.add('hidden')">I will reach out</button></div></div>
+
+<script>
+let soberData=JSON.parse(localStorage.getItem('soberData')||'{}');
+let checkins=JSON.parse(localStorage.getItem('soberCheckins')||'[]');
+let forum=JSON.parse(localStorage.getItem('soberForum')||'[]');
+let reports=JSON.parse(localStorage.getItem('soberReports')||'[]');
+let banned=JSON.parse(localStorage.getItem('soberBanned')||'[]');
+let reasons=localStorage.getItem('soberReasons')||'';
+let money=JSON.parse(localStorage.getItem('soberMoney')||'{}');
+const ADMIN_CODE="KwakuAdmin2026";
+const selfHarmKeywords=['kill myself','suicide','want to die','end my life','self harm','cut myself'];
+const quotes=["You are stronger than your craving.","One day at a time.","Fall seven times, stand up eight."];
+
+function nextOnboard(n){document.querySelectorAll('#onboard .onCard').forEach(x=>x.classList.add('hidden'));document.getElementById('onStep'+n).classList.remove('hidden');}
+function finishOnboard(){
+  const dateVal=document.getElementById('onStartDate').value;
+  const typeVal=document.getElementById('onAddType').value;
+  soberData={startDate: dateVal || new Date().toISOString().slice(0,16), type: typeVal};
+  localStorage.setItem('soberData',JSON.stringify(soberData));
+  // FIXED: force hide with style
+  document.getElementById('onboard').style.display='none';
+  updateSober();
+  renderHomeReasons();
+}
+if(soberData.startDate){document.getElementById('onboard').style.display='none';}
+
+function showTab(t){
+  document.querySelectorAll('[id^=tab-]').forEach(x=>x.classList.add('hidden'));
+  document.getElementById('tab-'+t).classList.remove('hidden');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById('btn-'+t);
+  if(btn) btn.classList.add('active');
+  if(t=='money') updateMoney();
+  if(t=='reasons') reasonsText.value=reasons;
+  if(t=='home') renderHomeReasons();
+  if(t=='forum') renderForum();
+}
+function updateSober(){
+  if(!soberData.startDate) return;
+  const start=new Date(soberData.startDate);
+  const tick=()=>{
+    const diff=new Date()-start;
+    if(diff<0) return;
+    const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000);
+    soberTime.innerText=`${d}d ${h}h ${m}m`;
+    soberSinceText.innerText=`Sober from ${soberData.type} since ${start.toLocaleString()}`;
+    const ms=[{d:1,l:'1 day'},{d:7,l:'1 week'},{d:30,l:'30 days'},{d:90,l:'90 days'},{d:365,l:'1 year'}];
+    milestones.innerHTML=ms.map(x=>`<span style="display:inline-block;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700;margin:4px;background:${d>=x.d?'#1b4332':'#e9ecef'};color:${d>=x.d?'white':'#666'}">${d>=x.d?'✅ ':''}${x.l}</span>`).join('');
+    updateMoney();
+  };
+  tick(); setInterval(tick,60000);
+}
+updateSober();
+function renderHomeReasons(){const list=reasons.split('\n').filter(x=>x.trim());homeReasons.innerHTML=list.length?list.map(r=>`<span style="background:#e9f5ee;color:#1b4332;padding:6px 10px;border-radius:12px;font-size:12px">${r}</span>`).join(''):'No reasons yet - add in My Reasons';}
+function saveCheckin(){checkins.unshift({date:new Date().toLocaleString(),mood:mood.value,craving:craving.value,note:note.value});localStorage.setItem('soberCheckins',JSON.stringify(checkins));note.value='';renderCheckins();}
+function renderCheckins(){checkinList.innerHTML=checkins.slice(0,10).map(c=>`• ${c.date} - ${c.mood} - ${c.craving}/10 - ${c.note}<br>`).join('');}
+renderCheckins();
+function saveMoney(){money.weekly=parseFloat(weeklySpend.value)||0;localStorage.setItem('soberMoney',JSON.stringify(money));updateMoney();}
+function updateMoney(){if(!soberData.startDate||!money.weekly) return;const days=Math.floor((new Date()-new Date(soberData.startDate))/86400000);const saved=(days/7)*money.weekly;moneySaved.innerText='GHS '+saved.toFixed(2);let v='';if(saved>50)v=`You saved for ${Math.floor(saved/50)} bags of rice 🍚`;else if(saved>20)v='Enough for transport 🚌';else v='Small small, it grows 🌱';moneyVisual.innerText=v;weeklySpend.value=money.weekly;}
+function saveReasons(){reasons=reasonsText.value;localStorage.setItem('soberReasons',reasons);renderHomeReasons();alert('Saved');}
+function newQuote(){quoteText.innerText='"'+quotes[Math.floor(Math.random()*quotes.length)]+'"';}
+function openUrge(){urgeModal.classList.remove('hidden');urgeModal.style.display='flex';urgeReasons.innerText=reasons||'Your health, family, future...';let inhale=true;setInterval(()=>{breathCircle.style.transform=inhale?'scale(1.5)':'scale(1)';breathText.innerText=inhale?'Inhale 4s...':'Exhale 6s...';inhale=!inhale;},4000);}
+function closeUrge(){urgeModal.classList.add('hidden');urgeModal.style.display='none';}
+function openSlipModal(){slipModal.classList.remove('hidden');slipModal.style.display='flex';}
+function closeSlip(){slipModal.classList.add('hidden');slipModal.style.display='none';}
+function confirmSlip(){checkins.unshift({date:new Date().toLocaleString(),mood:'Slip - learning',craving:'-',note:slipNote.value});localStorage.setItem('soberCheckins',JSON.stringify(checkins));soberData.startDate=new Date().toISOString().slice(0,16);localStorage.setItem('soberData',JSON.stringify(soberData));closeSlip();alert('Reset with care. No shame.');updateSober();}
+function addPost(){const name=fName.value||'Anon'+Math.floor(Math.random()*1000);if(banned.includes(name)){alert('Banned');return;}const msg=fMsg.value.trim();if(!msg)return;const flagged=selfHarmKeywords.some(k=>msg.toLowerCase().includes(k));if(flagged){selfHarmPopup.classList.remove('hidden');selfHarmPopup.style.display='flex';}const post={id:Date.now(),name,msg,cat:forumCat.value,time:new Date().toLocaleString(),flagged,reports:0,replies:[],hugs:0,daysSober:Math.floor((new Date()-new Date(soberData.startDate))/86400000)||0,approved:!flagged};forum.unshift(post);if(flagged)reports.unshift({...post,reason:'Self-harm'});localStorage.setItem('soberForum',JSON.stringify(forum));localStorage.setItem('soberReports',JSON.stringify(reports));fMsg.value='';renderForum();}
+function renderForum(){const filter=forumFilter.value;let list=forum.filter(p=>p.approved);if(filter!=='All')list=list.filter(p=>p.cat==filter);forumPosts.innerHTML=list.map(p=>`<div style="border-left:4px solid ${p.cat=='Wins'?'#2d6a4f':p.cat=='Struggles'?'#fb8500':'#3a86ff'};background:white;padding:10px;border-radius:10px;margin-bottom:8px"><b>${p.name}</b> <span style="background:#b7e4c7;padding:2px 6px;border-radius:8px;font-size:11px">${p.daysSober}d sober</span> <span style="font-size:10px;background:#eee;padding:2px 6px;border-radius:8px">${p.cat}</span><div style="margin:6px 0">${p.msg}</div><div style="font-size:12px"><span onclick="hugPost(${p.id})" style="cursor:pointer">🤗 ${p.hugs}</span> <span onclick="reportWithReason(${p.id})" style="cursor:pointer;color:#d90429"> 🚩Report</span> <span onclick="replyPost(${p.id})" style="cursor:pointer"> 💬${p.replies.length}</span></div>${p.replies.map(r=>`<div style="margin-left:10px;background:#f8f9fa;padding:6px;border-radius:8px;margin-top:4px"><b>${r.name}:</b> ${r.msg}</div>`).join('')}</div>`).join('')||'No posts';}
+function hugPost(id){const p=forum.find(x=>x.id==id);p.hugs++;localStorage.setItem('soberForum',JSON.stringify(forum));renderForum();}
+function reportWithReason(id){const r=prompt('Reason: Shaming, Drug sourcing, Medical advice, Self-harm');if(!r)return;const p=forum.find(x=>x.id==id);p.reports++;reports.unshift({...p,reason:r});localStorage.setItem('soberReports',JSON.stringify(reports));alert('Reported');renderForum();}
+function replyPost(id){const n=prompt('Name:')||'Anon';const m=prompt('Reply:');if(!m)return;forum.find(x=>x.id==id).replies.push({name:n,msg:m});localStorage.setItem('soberForum',JSON.stringify(forum));renderForum();}
+
+// SECRET ADMIN
+let taps=0;logoTap.addEventListener('click',()=>{taps++;if(taps>=5){taps=0;const c=prompt('Admin code:');if(c===ADMIN_CODE){document.querySelectorAll('[id^=tab-]').forEach(x=>x.classList.add('hidden'));document.getElementById('tab-admin').classList.remove('hidden');unlockAdmin();}else if(c)alert('Wrong');}setTimeout(()=>taps=0,3000);});
+if(location.hash==='#kwaku-admin'){setTimeout(()=>{const c=prompt('Admin code:');if(c===ADMIN_CODE){document.querySelectorAll('[id^=tab-]').forEach(x=>x.classList.add('hidden'));document.getElementById('tab-admin').classList.remove('hidden');unlockAdmin();}},500);}
+function unlockAdmin(){if(adminCode.value && adminCode.value!==ADMIN_CODE){alert('Wrong');return;}adminContent.classList.remove('hidden');statPosts.innerText=forum.length;statReports.innerText=reports.length;flaggedList.innerText=JSON.stringify(reports,null,2);adminForum.innerHTML=forum.map(p=>`<div style="padding:6px;border-bottom:1px solid #333">${p.name}: ${p.msg.slice(0,60)} <button onclick="deletePost(${p.id})">Del</button> <button onclick="banUser('${p.name}')">Ban</button> <button onclick="approvePost(${p.id})">Approve</button></div>`).join('');}
+function deletePost(id){forum=forum.filter(x=>x.id!==id);localStorage.setItem('soberForum',JSON.stringify(forum));unlockAdmin();renderForum();}
+function banUser(n){banned.push(n);localStorage.setItem('soberBanned',JSON.stringify(banned));alert('Banned '+n);}
+function approvePost(id){const p=forum.find(x=>x.id==id);if(p){p.approved=true;p.flagged=false;localStorage.setItem('soberForum',JSON.stringify(forum));unlockAdmin();renderForum();}}
+</script>
+</body>
+</html>
